@@ -1,0 +1,47 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar 
+ */
+
+grammar grammar;
+
+<ainame> = jarvis;
+
+//<--------------------TAGS FOR NUMBERS AND MATH-------------------->
+<oneDigitNumber> = (one | two | three | four | five | six | seven | eight | nine);
+<multipleOfTen> = (twenty | thirty | forty | fifty | sixty | seventy | eight | ninety);
+<twoDigitNumber> = (eleven | twelve | thirteen | fourteen | fifteen) | (<multipleOfTen> <oneDigitNumber>);
+<threeDigitNumber> = (<oneDigitNumber> hundred <twoDigitNumber>) | <twoDigitNumber> | <oneDigitNumber>;
+<fullNumber> = [(<oneDigitNumber> | <twoDigitNumber> | <threeDigitNumber>) billion]
+               [(<oneDigitNumber> | <twoDigitNumber> | <threeDigitNumber>) million]
+               [(<oneDigitNumber> | <twoDigitNumber> | <threeDigitNumber>) thousand] <threeDigitNumber>;
+<arithmeticOperator> = (plus | minus | times | divided by | to the power of);
+
+<appliance> = (television | tv | light | computer);
+<location> = (school | my home | my house | outside);
+<name> = (sam | rein | linda | frank);
+<room> = (<name>'s room | the kitchen | the living room | the man cave | the washing room | the bathroom);
+
+//<--------------------TAGS FOR DATES AND TIME-------------------->
+<weekDay> = (monday | tuesday | wednesday | thursday | friday);
+<day> = (today | tomorrow | the day after tomorrow | in <fullNumber> days | <weekDay>);
+<time> = (<fullNumber> (in the morning | in the evening)) | (<fullNumber> <fullNumber>) | (<fullNumber> o' clock) | (<fullNumber> [minutes] (past | to) <fullNumber>)
+        | ((quarter | half) (past | to) <fullNumber>);
+
+//<--------------------FULL SENTENCES-------------------->
+public <greeting> = [hello | good morning] <ainame>;
+
+public <timeRequest> = <ainame> (what time is it | what's the time | what time is it now);
+public <dateRequest> = <ainame> (what | which) (date is) (it) [<day>];
+public <temperatureRequest> = <ainame> (how hot is it | how cold is it | what temperature is it) [in | at] [<location> | <room>];
+
+public <busDepartureRequest> = <ainame> (when | how late | at what time) (does my bus to) <location> (leave);
+
+public <applianceActivation> = <ainame> (turn on the) <appliance> [in <room>];
+public <applianceDeactivation> = <ainame> (turn off the) <appliance> [in <room>];
+
+public <setAlarm> = (set an alarm for) <time> <day>;
+public <snoozeAlarm> = (snooze);
+
+public <arithmeticOperation> = [what is] <fullNumber> <arithmeticOperator> <fullNumber>;
