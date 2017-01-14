@@ -14,6 +14,7 @@ public class Weather {
         // declaring object of "OpenWeatherMap" class
         OpenWeatherMap owm = new OpenWeatherMap("bf46a2140c084fc90d31b2447cb3b637");
 
+        // return the weather map
         return owm;
     }
 
