@@ -1,5 +1,6 @@
 package model;
 
+import net.aksingh.owmjapis.CurrentWeather;
 import net.aksingh.owmjapis.OpenWeatherMap;
 import org.json.JSONException;
 
@@ -10,16 +11,24 @@ import java.io.IOException;
  */
 public class Weather {
 
-    public static OpenWeatherMap getWeather() throws IOException, JSONException {
+    public static CurrentWeather getWeather() throws IOException, JSONException {
         // declaring object of "OpenWeatherMap" class
         OpenWeatherMap owm = new OpenWeatherMap("bf46a2140c084fc90d31b2447cb3b637");
+        CurrentWeather cw = owm.currentWeatherByCityName("Rijpwetering");
 
         // return the weather map
-        return owm;
+        return cw;
     }
 
     public static double fahrenheitToCelsius(float fahrenheit) {
         double celsius = (fahrenheit - 32) / 1.8;
+
+        return celsius;
+    }
+
+    public static int getTemperature() throws IOException, JSONException {
+        float fahrenheit = getWeather().getMainInstance().getTemperature();
+        int celsius = (int) fahrenheitToCelsius(fahrenheit);
 
         return celsius;
     }

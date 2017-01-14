@@ -32,6 +32,8 @@ grammar grammar;
 //<--------------------FULL SENTENCES-------------------->
 public <greeting> = [hello | good morning] <ainame>;
 
+public <temperature> = <ainame> [(what is) | (get)] [the] (temperature);
+
 public <timeRequest> = <ainame> (what time is it | what's the time | what time is it now);
 public <dateRequest> = <ainame> (what | which) (date is) (it) [<day>];
 public <temperatureRequest> = <ainame> (how hot is it | how cold is it | what temperature is it) [in | at] [<location> | <room>];
