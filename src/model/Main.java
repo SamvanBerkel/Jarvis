@@ -22,6 +22,8 @@ public class Main {
 
 	static SerialPort serialPort;
 
+	static Voice voice;
+
 
 	// Logger
 	private Logger logger = Logger.getLogger(getClass().getName());
@@ -213,7 +215,9 @@ public class Main {
 	public void timeRequest() {
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 		Date date = new Date();
+		String time = dateFormat.format(date);
 		System.out.println(dateFormat.format(date));
+		voice.say(time.substring(0, time.length() - 2));
 	}
 	public void dateRequest() {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -228,6 +232,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		voice = new Voice("kevin16");
 
 		// // Be sure that the user can't start this application by not giving
 		// the
