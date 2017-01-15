@@ -231,6 +231,8 @@ public class Main {
 	private void weatherRequests(String speech) throws IOException, JSONException {
 		if (speech.contains("temperature")) {
 			voice.say(String.valueOf(Weather.getTemperature()) + "degrees celsius");
+		} if (speech.contains("what") && speech.contains("weather")) {
+			voice.say(Weather.getWeatherDescription());
 		}
 	}
 

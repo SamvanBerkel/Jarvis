@@ -33,6 +33,7 @@ grammar grammar;
 public <greeting> = [hello | good morning] <ainame>;
 
 public <temperature> = <ainame> [(what is) | (get)] [the] (temperature);
+public <weather> = <ainame> [(what is) | (get)] [the] [current] (weather) [like];
 
 public <timeRequest> = <ainame> (what time is it | what's the time | what time is it now);
 public <dateRequest> = <ainame> (what | which) (date is) (it) [<day>];

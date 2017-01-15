@@ -32,6 +32,12 @@ public class Weather {
 
         return celsius;
     }
+
+    public static String getWeatherDescription() throws IOException, JSONException {
+        String description = getWeather().getWeatherInstance(0).getWeatherDescription();
+
+        return description;
+    }
 }
 
 
