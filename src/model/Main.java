@@ -4,6 +4,7 @@ import com.fazecast.jSerialComm.SerialPort;
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
+import org.json.JSONException;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Port;
@@ -168,10 +169,12 @@ public class Main {
 	/**
 	 * Takes a decision based on the given result
 	 */
-	public void makeDecision(String speech) {
+	public void makeDecision(String speech) throws IOException, JSONException {
 
 		// Split the sentence
 		String[] array = speech.split(" ");
+
+		weatherRequests(speech);
 
 		if (speech.contains("what") && speech.contains("time") && !speech.contains("bus")){
 			timeRequest();
@@ -223,6 +226,18 @@ public class Main {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = new Date();
 		System.out.println(dateFormat.format(date));
+	}
+
+	private void weatherRequests(String speech) throws IOException, JSONException {
+		if (speech.contains("temperature")) {
+			voice.say(String.valueOf(Weather.getTemperature()) + "degrees celsius");
+		} if (speech.contains("weather")) {
+			voice.say(Weather.getWeatherDescription());
+		} if (speech.contains("wind speed")) {
+			voice.say(Weather.getWindSpeed());
+		} if (speech.contains("weather") && speech.contains("tomorrow")) {
+			voice.say(Weather.getWeatherTomorrow());
+		}
 	}
 
 
