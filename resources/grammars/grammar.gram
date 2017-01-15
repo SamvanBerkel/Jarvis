@@ -46,7 +46,7 @@ public <busDepartureRequest> = <ainame> (when | how late | at what time) (does m
 public <applianceActivation> = <ainame> (turn on the) <appliance> [in <room>];
 public <applianceDeactivation> = <ainame> (turn off the) <appliance> [in <room>];
 
-public <setAlarm> = (set an alarm for) <time> <day>;
-public <snoozeAlarm> = (snooze);
+public <setAlarm> = <ainame> (set an alarm for) <time> <day>;
+public <snoozeAlarm> = <ainame> (snooze);
 
-public <arithmeticOperation> = [what is] <fullNumber> <arithmeticOperator> <fullNumber>;
+public <arithmeticOperation> = <ainame> [what is] <fullNumber> <arithmeticOperator> <fullNumber>;
