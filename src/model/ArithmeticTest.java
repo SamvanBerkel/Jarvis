@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by sam on 15/01/2017.
  */
-public class ArithmeticTest1 {
+public class ArithmeticTest {
 
     @Test
     public void string_to_one_digit_number(){
