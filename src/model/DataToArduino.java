@@ -2,59 +2,78 @@ package model;
 
 import com.fazecast.jSerialComm.SerialPort;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 
-import static com.fazecast.jSerialComm.SerialPort.getCommPort;
-
 public class DataToArduino {
-    private static String speech;
 
-    static SerialPort serialPort;
+    static SerialPort chosenPort;
 
-    public static void main(String[] args){
-        startConnection();
-    }
+    public static void main(String[] args) {
 
-    public static void startConnection() {
-        speech = "";
+        // create and configure the window
+        JFrame window = new JFrame();
+        window.setTitle("Arduino LCD Clock");
+        window.setSize(400, 75);
+        window.setLayout(new BorderLayout());
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        serialPort = getCommPort("COM3");
+        // create a drop-down box and connect button, then place them at the top of the window
+        JComboBox<String> portList = new JComboBox<String>();
+        JButton connectButton = new JButton("Connect");
+        JPanel topPanel = new JPanel();
+        topPanel.add(portList);
+        topPanel.add(connectButton);
+        window.add(topPanel, BorderLayout.NORTH);
 
-        serialPort.openPort();
-        serialPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
+        // populate the drop-down box
+        SerialPort[] portNames = SerialPort.getCommPorts();
+        for(int i = 0; i < portNames.length; i++)
+            portList.addItem(portNames[i].getSystemPortName());
 
-        if (serialPort.openPort()) {
-            System.out.println("port is open");
-        } else {
-            System.out.println("port is closed");
-        }
+        // configure the connect button and use another thread to send data
+        connectButton.addActionListener(new ActionListener(){
+            @Override public void actionPerformed(ActionEvent arg0) {
+                if(connectButton.getText().equals("Connect")) {
+                    // attempt to connect to the serial port
+                    chosenPort = SerialPort.getCommPort(portList.getSelectedItem().toString());
+                    chosenPort.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_SEMI_BLOCKING, 0, 0);
+                    if(chosenPort.openPort()) {
+                        connectButton.setText("Disconnect");
+                        portList.setEnabled(false);
 
-        // create a new thread for sending data to the arduino
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                // wait after connecting, so the bootloader can finish
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                }
+                        // create a new thread for sending data to the arduino
+                        Thread thread = new Thread(){
+                            @Override public void run() {
+                                // wait after connecting, so the bootloader can finish
+                                try {Thread.sleep(1000); } catch(Exception e) {}
 
-                // enter an infinite loop that sends text to the arduino
-                PrintWriter output = new PrintWriter(serialPort.getOutputStream());
-                while (true) {
-                    output.print("tvon");
-                    output.flush();
-                    try {
-                        Thread.sleep(100);
-                    } catch (Exception e) {
+                                // enter an infinite loop that sends text to the arduino
+                                PrintWriter output = new PrintWriter(chosenPort.getOutputStream());
+                                while(true) {
+                                    //output.print(new SimpleDateFormat("hh:mm:ss a     MMMMMMM dd, yyyy").format(new Date()));
+                                    output.print("this works");
+                                    output.flush();
+                                    try {Thread.sleep(100); } catch(Exception e) {}
+                                }
+                            }
+                        };
+                        thread.start();
                     }
+                } else {
+                    // disconnect from the serial port
+                    chosenPort.closePort();
+                    portList.setEnabled(true);
+                    connectButton.setText("Connect");
                 }
             }
-        };
-        thread.start();
+        });
+
+        // show the window
+        window.setVisible(true);
     }
 
-    public static void setSpeech(String speechIn){
-        speech = speechIn;
-    }
 }

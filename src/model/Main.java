@@ -190,8 +190,9 @@ public class Main {
 		}
 
 		if (speech.contains("off") && (speech.contains("tv") || speech.contains("television"))){
-			System.out.println("turning on the tv");
-			//setSpeech("tvoff");
+			System.out.println("turning off the tv");
+			Arduino.setData("this works");
+			Arduino.startDataSendThread();
 		}
 
 		// return if user said only one number
