@@ -19,6 +19,7 @@ grammar grammar;
 <arithmeticOperator> = (plus | minus | times | divided by | to the power of);
 
 <appliance> = (television | tv | light | computer);
+<media> = (tv | television | netflix | plex | youtube);
 <location> = (school | my home | my house | outside);
 <name> = (sam | rein | linda | frank);
 <room> = (<name>'s room | the kitchen | the living room | the man cave | the washing room | the bathroom);
@@ -30,7 +31,7 @@ grammar grammar;
         | ((quarter | half) (past | to) <fullNumber>);
 
 //<--------------------FULL SENTENCES-------------------->
-public <greeting> = [hello | good morning] <ainame>;
+public <greeting> = (hello | good morning) <ainame>;
 
 public <temperature> = <ainame> [(what is) | (get)] [the] (temperature);
 public <weather> = <ainame> [(what is) | (get)] [the] [current] (weather | wind speed) [like];
@@ -52,3 +53,7 @@ public <snoozeAlarm> = <ainame> (snooze);
 public <arithmeticOperation> = <ainame> [what is] <fullNumber> <arithmeticOperator> <fullNumber>;
 
 public <fuck> = <ainame> (fuck off);
+
+public <tvNextChannel> = <ainame> (next channel) [please];
+public <tvPreviousChannel> = <ainame> (previous channel) [please];
+public <tvActivation> = <ainame> (i want to watch) (<media>);

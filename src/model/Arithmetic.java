@@ -8,10 +8,10 @@ public class Arithmetic {
             "seven", "eight", "nine"};
 
     public static void main(String[] args){
-
+        System.out.println(Arithmetic.calculation(123, "plus", 50430));
     }
 
-    public static double calculation(long firstNumber, String operator, long secondNumber){
+    public static double calculation(double firstNumber, String operator, double secondNumber){
         double result = 0;
         switch(operator){
             case("plus"): result = firstNumber + secondNumber;

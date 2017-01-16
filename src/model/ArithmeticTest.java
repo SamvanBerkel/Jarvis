@@ -57,4 +57,29 @@ public class ArithmeticTest {
     public void get_operator(){
         assertEquals(Arithmetic.getFirstNumber("Jarvis what is one thousand seventy eight times three hundred twenty four"), 1078);
     }
+
+    @Test
+    public void calculation_plus(){
+        assertEquals(Arithmetic.calculation(123, "plus", 50430), 50553.0, 0);
+    }
+
+    @Test
+    public void calculation_minus(){
+        assertEquals(Arithmetic.calculation(345023, "minus", 23423), 321600, 0);
+    }
+    @Test
+    public void calculation_times(){
+        assertEquals(Arithmetic.calculation(342, "times", 2346), 802332.0, 0);
+    }
+
+    @Test
+    public void calculation_divided_by(){
+        assertEquals(Arithmetic.calculation(49234, "divided by", 722), 68.1911357341, 0.001);
+    }
+
+    @Test
+    public void calculation_to_the_power_of(){
+        assertEquals(Arithmetic.calculation(42, "to the power of", 4), 3111696.0, 0);
+    }
+
 }

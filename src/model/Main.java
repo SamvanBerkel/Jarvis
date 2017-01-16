@@ -1,50 +1,41 @@
 package model;
 
-import com.fazecast.jSerialComm.SerialPort;
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.json.JSONException;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Port;
+import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.fazecast.jSerialComm.SerialPort.getCommPort;
-//import static model.DataToArduino.setSpeech;
-
-public class Main {
-	private static String speech;
-
-	static SerialPort serialPort;
-
+public class Main extends Application {
+    private Logger logger = Logger.getLogger(getClass().getName());
+    private static String speech;
 	static Voice voice;
-
-
-	// Logger
-	private Logger logger = Logger.getLogger(getClass().getName());
-
-	// Variables
 	private String result;
-
-	// Threads
+	private static Scene scene;
 	Thread	speechThread;
 	Thread	resourcesThread;
-
-	// LiveRecognizer
 	private LiveSpeechRecognizer recognizer;
+	private static boolean isTvOn;
 
 	/**
 	 * Constructor
 	 */
 	public Main() {
-
 		// Loading Message
 		logger.log(Level.INFO, "Loading..\n");
 
@@ -74,13 +65,10 @@ public class Main {
 		// Start recognition process pruning previously cached data.
 		recognizer.startRecognition(true);
 
-		//start connection to arduino
-		startConnection();
-
 		// Start the Thread
 		startSpeechThread();
 		startResourcesThread();
-		startArduinoDataThread();
+		Arduino.startDataSendThread();
 	}
 
 	/**
@@ -104,7 +92,6 @@ public class Main {
 					 */
 					SpeechResult speechResult = recognizer.getResult();
 					if (speechResult != null) {
-
 						result = speechResult.getHypothesis();
 						System.out.println("You said: [" + result + "]\n");
 						makeDecision(result);
@@ -112,18 +99,15 @@ public class Main {
 
 					} else
 						logger.log(Level.INFO, "I can't understand what you said.\n");
-
 				}
 			} catch (Exception ex) {
 				logger.log(Level.WARNING, null, ex);
 			}
-
 			logger.log(Level.INFO, "SpeechThread has exited...");
 		});
 
 		// Start
 		speechThread.start();
-
 	}
 
 	/**
@@ -158,20 +142,26 @@ public class Main {
 				resourcesThread.interrupt();
 			}
 		});
-
 		// Start
 		resourcesThread.start();
 	}
 
-	public void startArduinoDataThread(){
+    @Override
+    public void start(Stage stage) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Resources/view/MainMenu.fxml"));
 
-	}
+        scene = new Scene(root, 1920, 1080);
+
+        stage.setFullScreen(true);
+        stage.setTitle("Jarvis");
+        stage.setScene(scene);
+        stage.show();
+    }
 
 	/**
 	 * Takes a decision based on the given result
 	 */
 	public void makeDecision(String speech) throws IOException, JSONException {
-
 		// Split the sentence
 		String[] array = speech.split(" ");
 
@@ -186,15 +176,24 @@ public class Main {
 		}
 
 		if (speech.contains("on") && (speech.contains("tv") || speech.contains("television"))){
-			System.out.println("turning on the tv");
-			speech = "tvon";
+		    tvActivation();
 		}
 
 		if (speech.contains("off") && (speech.contains("tv") || speech.contains("television"))){
-			System.out.println("turning off the tv");
-			Arduino.setData("this works");
-			Arduino.startDataSendThread();
+			tvDeactivation();
 		}
+
+		if(speech.contains("next channel")){
+			Arduino.setData("next channel");
+		}
+		if(speech.contains("previous channel")){
+			Arduino.setData("previous channel");
+		}
+
+		if(speech.contains("i want to watch")){
+		    wantToWatchRequest(speech);
+        }
+
 
 		if(speech.contains("fuck off")){
 			voice.say("you can fuck off yourself");
@@ -210,26 +209,6 @@ public class Main {
 			double result = Arithmetic.calculation(Arithmetic.getFirstNumber(speech), Arithmetic.getOperator(speech), Arithmetic.getSecondNumber(speech));
 			voice.say(String.valueOf(result));
 		}
-
-		// return if user said only one number
-		if (array.length != 3)
-			return;
-
-	}
-
-	public static void startConnection() {
-		speech = "";
-
-		serialPort = getCommPort("COM3");
-
-		serialPort.openPort();
-		serialPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
-
-		if (serialPort.openPort()) {
-			System.out.println("port is open");
-		} else {
-			System.out.println("port is closed");
-		}
 	}
 
 	public void timeRequest() {
@@ -239,11 +218,32 @@ public class Main {
 		System.out.println(dateFormat.format(date));
 		voice.say(time.substring(0, time.length() - 2));
 	}
+
 	public void dateRequest() {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = new Date();
 		System.out.println(dateFormat.format(date));
 	}
+
+	public void tvActivation() {
+        if(isTvOn){
+            voice.say("the television is already on");
+        } else {
+            voice.say("turning on the television");
+            Arduino.setData("tv on");
+            isTvOn = true;
+        }
+    }
+
+    public void tvDeactivation() {
+        if(!isTvOn){
+            voice.say("the television is already off");
+        } else {
+            voice.say("turning off the television");
+            Arduino.setData("tv off");
+            isTvOn = false;
+        }
+    }
 
 	private void weatherRequests(String speech) throws IOException, JSONException {
 		if (speech.contains("temperature")) {
@@ -257,6 +257,32 @@ public class Main {
 		}
 	}
 
+	private void wantToWatchRequest(String speech) throws IOException {
+        String media = speech.substring(23, speech.length());
+        switch(media){
+            case "tv":
+            case "televion" : Arduino.setData("watch tv");
+            break;
+            case "netflix": Arduino.setData("watch pc");
+            break;
+            case "plex": Arduino.setData("watch pc");
+                ProcessBuilder plexProcess = new ProcessBuilder("C:/Program Files (x86)/Plex Home Theater/Plex Home Theater.exe");
+                plexProcess.start();
+                voice.say("starting plex");
+            break;
+            case "youtube": Arduino.setData("watch pc");
+                openWebpage("https://www.youtube.com/");
+            break;
+        }
+    }
+
+    public static void openWebpage(String urlString) {
+        try {
+            Desktop.getDesktop().browse(new URL(urlString).toURI());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 	/**
 	 * Java Main Application Method
@@ -264,7 +290,10 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+	    //launch(args);
 		voice = new Voice("kevin16");
+
+        isTvOn = false;
 
 		// // Be sure that the user can't start this application by not giving
 		// the
@@ -274,7 +303,5 @@ public class Main {
 		// else
 		// Logger.getLogger(Main.class.getName()).log(Level.WARNING, "Give me
 		// the correct entry string..");
-
 	}
-
 }
