@@ -11,6 +11,7 @@ import javax.sound.sampled.Port;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -193,6 +194,21 @@ public class Main {
 			System.out.println("turning off the tv");
 			Arduino.setData("this works");
 			Arduino.startDataSendThread();
+		}
+
+		if(speech.contains("fuck off")){
+			voice.say("you can fuck off yourself");
+
+		}
+
+		if(speech.contains("hello") || speech.contains("good morning")){
+			voice.say("hello sir");
+		}
+
+		if(speech.contains("plus") || speech.contains("minus") || speech.contains("times")
+				|| speech.contains("divided by") || speech.contains("to the power of")){
+			double result = Arithmetic.calculation(Arithmetic.getFirstNumber(speech), Arithmetic.getOperator(speech), Arithmetic.getSecondNumber(speech));
+			voice.say(String.valueOf(result));
 		}
 
 		// return if user said only one number

@@ -11,18 +11,18 @@ public class Arithmetic {
 
     }
 
-    public static double calculation(long firstNumber, int operator, long secondNumber){
+    public static double calculation(long firstNumber, String operator, long secondNumber){
         double result = 0;
         switch(operator){
-            case(1): result = firstNumber + secondNumber;
+            case("plus"): result = firstNumber + secondNumber;
                 break;
-            case(2): result = firstNumber - secondNumber;
+            case("minus"): result = firstNumber - secondNumber;
                 break;
-            case(3): result = firstNumber * secondNumber;
+            case("times"): result = firstNumber * secondNumber;
                 break;
-            case(4): result = firstNumber / secondNumber;
+            case("divided by"): result = firstNumber / secondNumber;
                 break;
-            case(5): result = Math.pow(firstNumber, secondNumber);
+            case("to the power of"): result = Math.pow(firstNumber, secondNumber);
         }
         return result;
     }
