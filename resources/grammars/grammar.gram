@@ -18,8 +18,10 @@ grammar grammar;
                [(<oneDigitNumber> | <twoDigitNumber> | <threeDigitNumber>) thousand] <threeDigitNumber>;
 <arithmeticOperator> = (plus | minus | times | divided by | to the power of);
 
-<appliance> = (television | tv | light | computer);
+<appliance> = (television | tv | (set top box) | light | computer);
 <media> = (tv | television | netflix | plex | youtube);
+<channel> = (channel one | channel two | channel three | (r t l four) | (r t l five) | (s b s six) | r t l seven | veronica | ([the] discovery [channel]) | (comedy central)
+        | (national geographic) | (t l c));
 <location> = (school | my home | my house | outside);
 <name> = (sam | rein | linda | frank);
 <room> = (<name>'s room | the kitchen | the living room | the man cave | the washing room | the bathroom);
@@ -56,4 +58,4 @@ public <fuck> = <ainame> (fuck off);
 
 public <tvNextChannel> = <ainame> (next channel) [please];
 public <tvPreviousChannel> = <ainame> (previous channel) [please];
-public <tvActivation> = <ainame> (i want to watch) (<media>);
+public <tvActivation> = <ainame> (i want to watch) (<media> | <channel>);
