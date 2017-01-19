@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 public class Arduino {
     private static SerialPort chosenPort;
     private static String data;
-    private static boolean firstTime = true;
     private static Thread thread;
 
     public static void startDataSendThread(){
@@ -18,7 +17,7 @@ public class Arduino {
         chosenPort.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_SEMI_BLOCKING, 0, 0);
         System.out.println(chosenPort.openPort());
 
-        if(firstTime){
+        if(chosenPort.isOpen()){
             thread = new Thread(){
                 @Override public void run() {
                     // wait after connecting, so the bootloader can finish

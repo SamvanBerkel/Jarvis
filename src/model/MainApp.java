@@ -35,7 +35,7 @@ public class MainApp extends Application {
      * @param args
      */
     public static void main(String[] args) {
-        //launch(args);
+        launch(args);
         voice = new Voice("kevin16");
 
         // // Be sure that the user can't start this application by not giving
@@ -168,7 +168,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Resources/view/MainMenu.fxml"));
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("/view/MainMenu.fxml"));
 
         scene = new Scene(root, 1920, 1080);
 
